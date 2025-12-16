@@ -3,7 +3,11 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"update:notams": "node scripts/update-notam-status.mjs"
+		"update:notams": "node scripts/update-notam-status.mjs",
+		"notams:fetch": "node scripts/update-notam-status.mjs",
+		"notams:upload": "node scripts/upload-notams-r2.mjs",
+		"notams:parse-status": "node scripts/parse-notam-status.mjs",
+		"notams:update": "npm run notams:fetch && npm run notams:parse-status && npm run notams:upload"
 	},
 	"dependencies": {
 		"@auth/core": "^0.37.2",
