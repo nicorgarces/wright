@@ -122,15 +122,35 @@ async function main() {
     const notamPdfUrls = await findNotamPdfUrls();
     const notamStatuses = [];
 
+    // Ensure directories exist
+    const plainTextsDir = "./data/plain_texts";
+    if (!fs.existsSync(plainTextsDir)) {
+      fs.mkdirSync(plainTextsDir, { recursive: true });
+    }
+
     for (const url of notamPdfUrls) {
       const pdfText = await processPdf(url); // Process each PDF
       if (pdfText) {
         notamStatuses.push({ url, text: pdfText });
+
+        // Save individual plain text file
+        const fileName = url.split("?").slice(-1)[0]; // Extract identifier from URL
+        const idMatch = fileName.match(/idFile=(\d+)/);
+        if (idMatch) {
+          const fileId = idMatch[1];
+          const plainTextPath = `${plainTextsDir}/notam-idFile-${fileId}.txt`;
+          fs.writeFileSync(plainTextPath, pdfText, "utf8");
+          console.log(`📄 Saved plain text: ${plainTextPath}`);
+        }
       }
     }
 
     // Save the NOTAM statuses to a JSON file
     const outputPath = "./src/data/notamStatus.json";
+    const dataDir = "./src/data";
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
     fs.writeFileSync(outputPath, JSON.stringify(notamStatuses, null, 2), "utf8");
     console.log(`✅ Wrote NOTAM status for ${notamStatuses.length} aerodromes to ${outputPath}`);
   } catch (err) {

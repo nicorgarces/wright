@@ -1,7 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-require("dotenv").config({ path: "./src/APIkeys.env" }); // Load environment variables from APIkeys.env
 
 const bucketName = "notams-data"; // Cloudflare R2 bucket name
 const NOTAM_ACCESS_KEY = process.env.CF_ACCESS_KEY_ID_NOTAMS;
