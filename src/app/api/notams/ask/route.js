@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
 
+// Configuration constants
+const MAX_AIRPORTS_IN_CONTEXT = 20;
+const MAX_NOTAMS_PER_AIRPORT = 2;
+const MAX_TEXT_LENGTH = 200;
+
 // POST /api/notams/ask - AI chatbot for NOTAM questions using Cloudflare Workers AI
 export async function POST(request) {
   try {
@@ -48,14 +53,14 @@ export async function POST(request) {
       contextParts.push(`Total airports: ${data.airports?.length || 0}\n`);
       
       // Add airport summaries
-      data.airports?.slice(0, 20).forEach((airport) => {
+      data.airports?.slice(0, MAX_AIRPORTS_IN_CONTEXT).forEach((airport) => {
         contextParts.push(
           `${airport.icao} (${airport.airportName}): ${airport.overallStatus.toUpperCase()} - ${airport.notams?.length || 0} active NOTAMs`
         );
         
         // Add first few NOTAM texts for this airport
-        airport.notams?.slice(0, 2).forEach((notam) => {
-          const shortText = notam.text.substring(0, 200).replace(/\n/g, " ");
+        airport.notams?.slice(0, MAX_NOTAMS_PER_AIRPORT).forEach((notam) => {
+          const shortText = notam.text.substring(0, MAX_TEXT_LENGTH).replace(/\n/g, " ");
           contextParts.push(`  - ${shortText}...`);
         });
       });

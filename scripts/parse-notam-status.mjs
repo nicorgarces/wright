@@ -70,7 +70,8 @@ function extractDateRange(text) {
 
 function parseDateString(dateStr) {
   // Parse format: YYMMDDHHmm (e.g., 2510281548 = 2025-10-28 15:48 UTC)
-  if (dateStr.length !== 10) return null;
+  const NOTAM_DATE_STRING_LENGTH = 10;
+  if (dateStr.length !== NOTAM_DATE_STRING_LENGTH) return null;
   
   const year = 2000 + parseInt(dateStr.substring(0, 2));
   const month = dateStr.substring(2, 4);
