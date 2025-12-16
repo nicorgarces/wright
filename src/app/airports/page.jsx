@@ -7,6 +7,7 @@ import useLanguage from "../../utils/useLanguage";
 import { t } from "../../utils/translations";
 import airportInfo from "../../data/airportInfo.mjs";
 import "leaflet/dist/leaflet.css"; // safe: just CSS
+import notamStatus from "../../data/notamStatus.json";
 
 // ---------- helpers ----------
 

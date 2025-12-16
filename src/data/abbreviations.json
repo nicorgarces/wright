@@ -1,0 +1,314 @@
+{
+  "BARO-VNAV+": {
+    "spanish": "(debe       pronunciarse",
+    "english": "“BA-RO-VI-"
+  },
+  "BLDG": {
+    "spanish": "Edificio",
+    "english": "Building"
+  },
+  "BLO": {
+    "spanish": "Por debajo de nubes",
+    "english": "Below clouds"
+  },
+  "BLW ...": {
+    "spanish": "Por debajo de ...",
+    "english": "Below"
+  },
+  "BOMB": {
+    "spanish": "Bombardeo",
+    "english": "Bombing"
+  },
+  "BR": {
+    "spanish": "Neblina",
+    "english": "Mist"
+  },
+  "BRF": {
+    "spanish": "Corta  (utilizada  para  indicar  el  tipo  de aproximación deseado o requerido)",
+    "english": "Short    (used    to    indicate    the of approach desired or required)"
+  },
+  "BRG": {
+    "spanish": "Marcación",
+    "english": "Bearing"
+  },
+  "BRKG": {
+    "spanish": "Frenado",
+    "english": "Braking"
+  },
+  "BS": {
+    "spanish": "Estación de radiodifusión comercial",
+    "english": "Commercial broadcasting station"
+  },
+  "BTL": {
+    "spanish": "Entre capas",
+    "english": "Between layers"
+  },
+  "BTN": {
+    "spanish": "Entre (como preposición)",
+    "english": "Between"
+  },
+  "CH#": {
+    "spanish": "Transmisión",
+    "english": "de"
+  },
+  "EV": {
+    "spanish": "Cada",
+    "english": "Every"
+  },
+  "EVS": {
+    "spanish": "Sistema de visión mejorada",
+    "english": "Enhanced vision  system"
+  },
+  "EXC": {
+    "spanish": "Excepto",
+    "english": "Except"
+  },
+  "EXER": {
+    "spanish": "Ejercicios o ejerciendo o ejercer",
+    "english": "Exercises or exercising or to exercise"
+  },
+  "EXP": {
+    "spanish": "Se espera o esperado o esperando",
+    "english": "Expect or expected or expecting"
+  },
+  "EXTD": {
+    "spanish": "Se    extiende    o    extendiéndose Extendido",
+    "english": "o  Extend or extending or extended"
+  },
+  "FATO": {
+    "spanish": "Área    de    aproximación",
+    "english": "final    y"
+  },
+  "FBL": {
+    "spanish": "Ligera     (utilizada     para",
+    "english": "indicar"
+  },
+  "FRQ": {
+    "spanish": "Frecuente",
+    "english": "Frequent"
+  },
+  "FSL": {
+    "spanish": "Aterrizaje completo",
+    "english": "Full stop landing"
+  },
+  "FSS": {
+    "spanish": "Estación de servicio de vuelo",
+    "english": "Flight service station"
+  },
+  "FST": {
+    "spanish": "Primero",
+    "english": "First"
+  },
+  "FT": {
+    "spanish": "Pies (unidad de medida)",
+    "english": "Feet (dimensional unit)"
+  },
+  "FTE": {
+    "spanish": "Error técnico de vuelo",
+    "english": "Flight technical error"
+  },
+  "FTP": {
+    "spanish": "Punto de umbral ficticio",
+    "english": "Fictitious threshold point"
+  },
+  "FTT": {
+    "spanish": "Tolerancia técnica de vuelo",
+    "english": "Flight technical tolerance"
+  },
+  "FU": {
+    "spanish": "Humo",
+    "english": "Smoke"
+  },
+  "FZ": {
+    "spanish": "Engelante o congelación",
+    "english": "Freezing"
+  },
+  "FZDZ": {
+    "spanish": "Llovizna engelante",
+    "english": "Freezing drizzle"
+  },
+  "FZFG": {
+    "spanish": "Niebla engelante",
+    "english": "Freezing fog"
+  },
+  "FZRA": {
+    "spanish": "Lluvia engelante",
+    "english": "Freezing rain"
+  },
+  "KG": {
+    "spanish": "Kilogramos",
+    "english": "Kilograms"
+  },
+  "KHZ": {
+    "spanish": "Kilohertzio",
+    "english": "Kilohertz"
+  },
+  "KIAS": {
+    "spanish": "Velocidad indicada en nudos",
+    "english": "Knots indicated airspeed"
+  },
+  "KM": {
+    "spanish": "Kilómetros",
+    "english": "Kilometres"
+  },
+  "KMH": {
+    "spanish": "Kilómetros por hora",
+    "english": "Kilometres per hour"
+  },
+  "KPA": {
+    "spanish": "Kilopascal",
+    "english": "Kilopascal"
+  },
+  "KT": {
+    "spanish": "Nudos",
+    "english": "Knots"
+  },
+  "KW": {
+    "spanish": "Kilovatios",
+    "english": "Kilowatts"
+  },
+  "MLS++": {
+    "spanish": "Sistema de aterrizaje por microondas",
+    "english": "Microwave landing system"
+  },
+  "MM": {
+    "spanish": "Radiobaliza intermedia",
+    "english": "Middle marker"
+  },
+  "MNPS": {
+    "spanish": "Especificaciones",
+    "english": "de"
+  },
+  "NOV": {
+    "spanish": "Noviembre",
+    "english": "November"
+  },
+  "NOZ++": {
+    "spanish": "Zona normal de operaciones",
+    "english": "Normal operating zone"
+  },
+  "NPA": {
+    "spanish": "Aproximación que no es de precisión",
+    "english": "Non-precision approach"
+  },
+  "NR": {
+    "spanish": "Número",
+    "english": "Number"
+  },
+  "NRH": {
+    "spanish": "No se escucha respuesta",
+    "english": "No reply heard"
+  },
+  "NS": {
+    "spanish": "Nimbostratus",
+    "english": "Nimbostratus"
+  },
+  "NSC": {
+    "spanish": "Sin nubes de importancia",
+    "english": "Nil significant cloud"
+  },
+  "NSE": {
+    "spanish": "Error del sistema de navegación",
+    "english": "Navigation system error"
+  },
+  "NSW": {
+    "spanish": "Ningún tiempo significativo",
+    "english": "Nil significant weather"
+  },
+  "NTL": {
+    "spanish": "Nacional",
+    "english": "National"
+  },
+  "NTZ++": {
+    "spanish": "Zona inviolable",
+    "english": "No transgression zone"
+  },
+  "NW": {
+    "spanish": "Noroeste",
+    "english": "North-west"
+  },
+  "NWB": {
+    "spanish": "Dirección noroeste",
+    "english": "North-westbound"
+  },
+  "NXT": {
+    "spanish": "Siguiente",
+    "english": "Next"
+  },
+  "QUJ": {
+    "spanish": "¿Quiere",
+    "english": "indicarme"
+  },
+  "WIP": {
+    "spanish": "Obras en progreso",
+    "english": "Work in progress"
+  },
+  "WKN": {
+    "spanish": "Decrece o decreciendo",
+    "english": "Weaken or weakening"
+  },
+  "WNW": {
+    "spanish": "Oestenoroeste",
+    "english": "West-north-west"
+  },
+  "WO": {
+    "spanish": "Sin",
+    "english": "Without"
+  },
+  "WPT": {
+    "spanish": "Punto de recorrido",
+    "english": "Way-point"
+  },
+  "WRNG": {
+    "spanish": "Aviso",
+    "english": "Warning"
+  },
+  "WS": {
+    "spanish": "Cizalladura del viento",
+    "english": "Wind sherar"
+  },
+  "WSPD": {
+    "spanish": "Velocidad del viento",
+    "english": "Wind speed"
+  },
+  "WSW": {
+    "spanish": "Oestesudoeste",
+    "english": "West-south-west"
+  },
+  "WT": {
+    "spanish": "Peso",
+    "english": "Weight"
+  },
+  "WTSPT": {
+    "spanish": "Tromba marina",
+    "english": "Waterspout"
+  },
+  "WWW": {
+    "spanish": "Worldwide web (Red mundial)",
+    "english": "Worldwide web"
+  },
+  "WX": {
+    "spanish": "Condiciones meteorológicas",
+    "english": "Weather"
+  },
+  "WXR": {
+    "spanish": "Radar metereológico",
+    "english": "Weather radar"
+  },
+  "X": {
+    "spanish": "Cruce",
+    "english": "Cross"
+  },
+  "XBAR": {
+    "spanish": "Barra    transversal    (de    sistema iluminación de aproximación)",
+    "english": "de  Crossbar (of approach lighting system)"
+  },
+  "XNG": {
+    "spanish": "Cruzando",
+    "english": "Crossing"
+  },
+  "XS": {
+    "spanish": "Atmosféricos",
+    "english": "Atmospherics"
+  }
+}
