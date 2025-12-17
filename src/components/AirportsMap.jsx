@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -55,6 +55,22 @@ function getStatusClassName(status) {
   }
 }
 
+// Get emoji for status
+function getStatusEmoji(status) {
+  if (!status) return "";
+  
+  switch (status) {
+    case "CLOSED":
+      return "❌ ";
+    case "LIMITED":
+      return "⚠️ ";
+    case "OPERATIONAL":
+      return "✅ ";
+    default:
+      return "";
+  }
+}
+
 // Define Colombia bounds to prevent panning too far (used by MapContainer)
 const colombiaBounds = [
   [-4.5, -79.5], // Southwest corner
@@ -78,8 +94,14 @@ export default function AirportsMap({
   useEffect(() => {
     const styleId = "airport-pulse-animations";
     
-    // Don't inject if already exists
-    if (document.getElementById(styleId)) return;
+    // Check if style already exists
+    const existingStyle = document.getElementById(styleId);
+    if (existingStyle) {
+      // Style already exists, just register cleanup for this instance
+      return () => {
+        // Don't remove on cleanup if it already existed
+      };
+    }
     
     const style = document.createElement("style");
     style.id = styleId;
@@ -133,36 +155,38 @@ export default function AirportsMap({
   const center = [4.5, -73.0];
   const zoom = 5.5;
 
-  const airportsWithCoords = airports
-    .map((a) => {
-      const info = airportInfo[a.icao];
-      if (
-        !info ||
-        typeof info.lat !== "number" ||
-        typeof info.lon !== "number"
-      ) {
-        return null;
-      }
-      const notamStatus = getNotamStatus(a.icao);
-      // Pre-format the date to avoid creating new Date objects during render
-      const notamStatusWithDate = notamStatus ? {
-        ...notamStatus,
-        formattedDate: notamStatus.lastUpdated 
-          ? new Date(notamStatus.lastUpdated).toLocaleString()
-          : null
-      } : null;
-      
-      return {
-        icao: a.icao,
-        lat: info.lat,
-        lon: info.lon,
-        controlled: isControlledAirport(a.icao),
-        name: info.name,
-        city: info.city,
-        notamStatus: notamStatusWithDate,
-      };
-    })
-    .filter(Boolean);
+  const airportsWithCoords = useMemo(() => {
+    return airports
+      .map((a) => {
+        const info = airportInfo[a.icao];
+        if (
+          !info ||
+          typeof info.lat !== "number" ||
+          typeof info.lon !== "number"
+        ) {
+          return null;
+        }
+        const notamStatus = getNotamStatus(a.icao);
+        // Pre-format the date to avoid creating new Date objects during render
+        const notamStatusWithDate = notamStatus ? {
+          ...notamStatus,
+          formattedDate: notamStatus.lastUpdated 
+            ? new Date(notamStatus.lastUpdated).toLocaleString()
+            : null
+        } : null;
+        
+        return {
+          icao: a.icao,
+          lat: info.lat,
+          lon: info.lon,
+          controlled: isControlledAirport(a.icao),
+          name: info.name,
+          city: info.city,
+          notamStatus: notamStatusWithDate,
+        };
+      })
+      .filter(Boolean);
+  }, [airports]);
 
   return (
     <MapContainer
@@ -214,7 +238,7 @@ export default function AirportsMap({
                           : "bg-green-100 text-green-700")
                       }
                     >
-                      {a.notamStatus.status === "CLOSED" ? "❌ " : a.notamStatus.status === "LIMITED" ? "⚠️ " : "✅ "}
+                      {getStatusEmoji(a.notamStatus.status)}
                       {a.notamStatus.status}
                     </span>
                   </div>
