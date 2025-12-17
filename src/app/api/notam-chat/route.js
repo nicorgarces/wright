@@ -2,13 +2,9 @@ import Groq from "groq-sdk";
 import fs from "fs";
 import path from "path";
 
-// Validate API key exists
-if (!process.env.GROQ_API_KEY) {
-  console.error("GROQ_API_KEY environment variable is not set");
-}
-
+// Initialize Groq client (will validate API key at runtime)
 const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: process.env.GROQ_API_KEY || "",
 });
 
 // Load airport status data
