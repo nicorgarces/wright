@@ -9,7 +9,7 @@ import { t } from "../../utils/translations";
 import airportInfo from "../../data/airportInfo.mjs";
 
 // Lazy load the map component to avoid SSR issues with Leaflet
-const AirportsMap = lazy(() => import('../../client-integrations/leaflet').then(module => ({ default: module.AirportsMap })));
+const AirportsMap = lazy(() => import('../../client-integrations/leaflet').then(({ AirportsMap }) => ({ default: AirportsMap })));
 
 // ---------- helpers ----------
 
@@ -447,21 +447,21 @@ export default function AirportsPage() {
                 {/* Main content: map when no airport selected, otherwise chart / empty state */}
                 {!selectedIcao ? (
                   <div className="flex-1">
-                    <ClientOnly 
-                      loader={() => (
-                        <Suspense fallback={
-                          <div className="w-full h-full flex items-center justify-center bg-slate-100">
-                            <div className="text-sm text-slate-500">Loading map...</div>
-                          </div>
-                        }>
+                    <Suspense fallback={
+                      <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                        <div className="text-sm text-slate-500">Loading map...</div>
+                      </div>
+                    }>
+                      <ClientOnly 
+                        loader={() => (
                           <AirportsMap
                             airports={filteredAirports}
                             selectedIcao={selectedIcao}
                             onSelectIcao={setSelectedIcao}
                           />
-                        </Suspense>
-                      )}
-                    />
+                        )}
+                      />
+                    </Suspense>
                   </div>
                 ) : selectedChart ? (
                   <>
