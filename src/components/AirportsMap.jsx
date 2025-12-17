@@ -55,12 +55,19 @@ function getStatusClassName(status) {
   }
 }
 
+// Define Colombia bounds to prevent panning too far (used by MapContainer)
+const colombiaBounds = [
+  [-4.5, -79.5], // Southwest corner
+  [13.5, -66.5]  // Northeast corner
+];
+
 export default function AirportsMap({
   airports,
   selectedIcao,
   onSelectIcao,
 }) {
   const [isReady, setIsReady] = useState(false);
+  const styleElementRef = React.useRef(null);
 
   // Avoid hydration glitches
   useEffect(() => {
@@ -109,22 +116,18 @@ export default function AirportsMap({
     `;
     
     document.head.appendChild(style);
+    styleElementRef.current = style;
     
+    // Cleanup function - remove the style element we added
     return () => {
-      const existingStyle = document.getElementById(styleId);
-      if (existingStyle) {
-        existingStyle.remove();
+      if (styleElementRef.current && styleElementRef.current.parentNode) {
+        styleElementRef.current.parentNode.removeChild(styleElementRef.current);
+        styleElementRef.current = null;
       }
     };
   }, []);
 
   if (!isReady) return null;
-
-  // Define Colombia bounds to prevent panning too far
-  const colombiaBounds = [
-    [-4.5, -79.5], // Southwest corner
-    [13.5, -66.5]  // Northeast corner
-  ];
 
   // Rough center of Colombia
   const center = [4.5, -73.0];
@@ -141,6 +144,14 @@ export default function AirportsMap({
         return null;
       }
       const notamStatus = getNotamStatus(a.icao);
+      // Pre-format the date to avoid creating new Date objects during render
+      const notamStatusWithDate = notamStatus ? {
+        ...notamStatus,
+        formattedDate: notamStatus.lastUpdated 
+          ? new Date(notamStatus.lastUpdated).toLocaleString()
+          : null
+      } : null;
+      
       return {
         icao: a.icao,
         lat: info.lat,
@@ -148,7 +159,7 @@ export default function AirportsMap({
         controlled: isControlledAirport(a.icao),
         name: info.name,
         city: info.city,
-        notamStatus: notamStatus,
+        notamStatus: notamStatusWithDate,
       };
     })
     .filter(Boolean);
@@ -212,9 +223,9 @@ export default function AirportsMap({
                       {a.notamStatus.reason}
                     </div>
                   )}
-                  {a.notamStatus.lastUpdated && (
+                  {a.notamStatus.formattedDate && (
                     <div className="text-[9px] text-gray-400">
-                      Updated: {new Date(a.notamStatus.lastUpdated).toLocaleString()}
+                      Updated: {a.notamStatus.formattedDate}
                     </div>
                   )}
                 </div>
