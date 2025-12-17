@@ -3,11 +3,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { getAirportSummaries, getChartsByIcao } from "../../lib/charts";
 import Header from "../../components/Header";
+import AirportsMap from "../../components/AirportsMap";
 import useLanguage from "../../utils/useLanguage";
 import { t } from "../../utils/translations";
 import airportInfo from "../../data/airportInfo.mjs";
 import "leaflet/dist/leaflet.css"; // safe: just CSS
-import notamStatus from "../../data/notamStatus.json";
 
 // ---------- helpers ----------
 
@@ -113,123 +113,6 @@ function AirportInfoPanel({ icao, onClose }) {
         )}
       </div>
     </div>
-  );
-}
-
-/**
- * Map with all airports.
- * - Only loads react-leaflet in the browser via dynamic import()
- * - Default view = Colombia
- * - Colors markers by controlled / uncontrolled
- * - Clicking a marker selects that airport
- */
-function AirportsMap({ airports, selectedIcao }) {
-  const [leafletComponents, setLeafletComponents] = useState(null);
-
-  // Load react-leaflet only in the browser
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    let cancelled = false;
-
-    import("react-leaflet")
-      .then((mod) => {
-        if (cancelled) return;
-        setLeafletComponents({
-          MapContainer: mod.MapContainer,
-          TileLayer: mod.TileLayer,
-          CircleMarker: mod.CircleMarker,
-          Popup: mod.Popup,
-        });
-      })
-      .catch((err) => {
-        console.error("Error loading react-leaflet:", err);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // While loading on the client
-  if (typeof window === "undefined" || !leafletComponents) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-sm text-slate-500">
-        Loading map…
-      </div>
-    );
-  }
-
-  const { MapContainer, TileLayer, CircleMarker, Popup } = leafletComponents;
-
-  // Build marker list from airportInfo coordinates
-  const markers = airports
-    .map((a) => {
-      const info = airportInfo[a.icao];
-      if (
-        !info ||
-        typeof info.latitude !== "number" ||
-        typeof info.longitude !== "number"
-      ) {
-        return null;
-      }
-      return { icao: a.icao, lat: info.latitude, lon: info.longitude };
-    })
-    .filter(Boolean);
-
-  // Colombia bounding box (SW, NE)
-  const colombiaBounds = [
-    [-4.7, -82.0], // south-west
-    [13.5, -66.0], // north-east
-  ];
-
-  // If an airport is selected, zoom into it; otherwise fit Colombia
-  const selectedMarker = selectedIcao
-    ? markers.find((m) => m.icao === selectedIcao)
-    : null;
-
-  const hasSelection = !!selectedMarker;
-
-  const mapCenter = hasSelection
-    ? [selectedMarker.lat, selectedMarker.lon]
-    : undefined;
-
-  const mapZoom = hasSelection ? 9 : undefined;
-
-  const mapBounds = hasSelection ? undefined : colombiaBounds;
-
-  return (
-    <MapContainer
-      // Default: fit whole Colombia
-      bounds={mapBounds}
-      // When a selection exists: override with center/zoom
-      center={mapCenter}
-      zoom={mapZoom}
-      minZoom={5}
-      maxBounds={colombiaBounds}
-      maxBoundsViscosity={1.0}
-      style={{ width: "100%", height: "100%" }}
-      scrollWheelZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-
-      {markers.map((m) => (
-        <CircleMarker
-          key={m.icao}
-          center={[m.lat, m.lon]}
-          radius={selectedIcao === m.icao ? 6 : 4}
-          pathOptions={{
-            color: selectedIcao === m.icao ? "#0f172a" : "#0284c7",
-            fillOpacity: 0.85,
-          }}
-        >
-          <Popup>{m.icao}</Popup>
-        </CircleMarker>
-      ))}
-    </MapContainer>
   );
 }
 
