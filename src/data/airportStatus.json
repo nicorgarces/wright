@@ -2,51 +2,51 @@
   "SKBO": {
     "status": "operational",
     "reason": "All runways and taxiways operational. Normal operations.",
-    "lastUpdated": "2025-12-17T19:00:00Z"
+    "lastUpdated": "2024-12-17T19:00:00Z"
   },
   "SKCL": {
     "status": "operational",
     "reason": "All systems operational. No restrictions.",
-    "lastUpdated": "2025-12-17T18:30:00Z"
+    "lastUpdated": "2024-12-17T18:30:00Z"
   },
   "SKMD": {
     "status": "limited",
     "reason": "Runway 02/20 closed for maintenance. Use runway 01/19 only. Night operations restricted.",
-    "lastUpdated": "2025-12-17T17:00:00Z"
+    "lastUpdated": "2024-12-17T17:00:00Z"
   },
   "SKMR": {
     "status": "operational",
     "reason": "All systems operational.",
-    "lastUpdated": "2025-12-17T19:00:00Z"
+    "lastUpdated": "2024-12-17T19:00:00Z"
   },
   "SKRG": {
     "status": "limited",
     "reason": "ILS approach system under maintenance. VFR operations only during daylight hours.",
-    "lastUpdated": "2025-12-17T16:00:00Z"
+    "lastUpdated": "2024-12-17T16:00:00Z"
   },
   "SKCG": {
     "status": "closed",
-    "reason": "Airport closed due to runway resurfacing work. Estimated reopening December 20, 2025.",
-    "lastUpdated": "2025-12-17T12:00:00Z"
+    "reason": "Airport closed due to runway resurfacing work. Estimated reopening December 20, 2024.",
+    "lastUpdated": "2024-12-17T12:00:00Z"
   },
   "SKBQ": {
     "status": "operational",
     "reason": "All runways operational. No restrictions.",
-    "lastUpdated": "2025-12-17T18:00:00Z"
+    "lastUpdated": "2024-12-17T18:00:00Z"
   },
   "SKSP": {
     "status": "limited",
     "reason": "Taxiway B closed. Extended taxi times expected. Tower frequency changed to 118.7 MHz.",
-    "lastUpdated": "2025-12-17T15:30:00Z"
+    "lastUpdated": "2024-12-17T15:30:00Z"
   },
   "SKPB": {
     "status": "operational",
     "reason": "Normal operations. All services available.",
-    "lastUpdated": "2025-12-17T19:00:00Z"
+    "lastUpdated": "2024-12-17T19:00:00Z"
   },
   "SKPE": {
     "status": "operational",
     "reason": "All systems operational.",
-    "lastUpdated": "2025-12-17T18:45:00Z"
+    "lastUpdated": "2024-12-17T18:45:00Z"
   }
 }

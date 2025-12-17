@@ -2,6 +2,11 @@ import Groq from "groq-sdk";
 import fs from "fs";
 import path from "path";
 
+// Validate API key exists
+if (!process.env.GROQ_API_KEY) {
+  console.error("GROQ_API_KEY environment variable is not set");
+}
+
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
@@ -47,6 +52,19 @@ Use clear, professional aviation terminology.`;
 
 export async function POST(request) {
   try {
+    // Check if API key is configured
+    if (!process.env.GROQ_API_KEY) {
+      return new Response(
+        JSON.stringify({ 
+          error: "GROQ_API_KEY is not configured. Please set the environment variable." 
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const { messages } = await request.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -68,8 +86,9 @@ export async function POST(request) {
       content: createSystemPrompt(airportStatus),
     };
 
-    // Combine system message with user messages
-    const allMessages = [systemMessage, ...messages];
+    // Filter out any existing system messages from frontend and add our system message
+    const userMessages = messages.filter(msg => msg.role !== "system");
+    const allMessages = [systemMessage, ...userMessages];
 
     // Create streaming chat completion
     const stream = await groq.chat.completions.create({

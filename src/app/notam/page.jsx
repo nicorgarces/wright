@@ -14,11 +14,6 @@ import Header from "../../components/Header";
 import useHandleStreamResponse from "../../utils/useHandleStreamResponse";
 import useLanguage from "../../utils/useLanguage";
 
-const SYSTEM_MESSAGE = {
-  role: "system",
-  content: `You are a NOTAM AI Assistant for Colombian aviation. You have access to real-time NOTAM data for Colombian airports.`,
-};
-
 export default function NOTAMPage() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -67,7 +62,7 @@ export default function NOTAMPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [SYSTEM_MESSAGE, ...messages, userMessage],
+          messages: [...messages, userMessage],
         }),
       });
 
