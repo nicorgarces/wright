@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, lazy, Suspense } from "react";
 import { getAirportSummaries, getChartsByIcao } from "../../lib/charts";
 import Header from "../../components/Header";
 import { ClientOnly } from "../root";
 import useLanguage from "../../utils/useLanguage";
 import { t } from "../../utils/translations";
 import airportInfo from "../../data/airportInfo.mjs";
+
+// Lazy load the map component to avoid SSR issues with Leaflet
+const AirportsMap = lazy(() => import('../../client-integrations/leaflet').then(module => ({ default: module.AirportsMap })));
 
 // ---------- helpers ----------
 
@@ -445,16 +448,19 @@ export default function AirportsPage() {
                 {!selectedIcao ? (
                   <div className="flex-1">
                     <ClientOnly 
-                      loader={() => {
-                        const { AirportsMap } = require('../../client-integrations/leaflet');
-                        return (
+                      loader={() => (
+                        <Suspense fallback={
+                          <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                            <div className="text-sm text-slate-500">Loading map...</div>
+                          </div>
+                        }>
                           <AirportsMap
                             airports={filteredAirports}
                             selectedIcao={selectedIcao}
                             onSelectIcao={setSelectedIcao}
                           />
-                        );
-                      }}
+                        </Suspense>
+                      )}
                     />
                   </div>
                 ) : selectedChart ? (
