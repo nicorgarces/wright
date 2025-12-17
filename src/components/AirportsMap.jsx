@@ -149,12 +149,6 @@ export default function AirportsMap({
     };
   }, []);
 
-  if (!isReady) return null;
-
-  // Rough center of Colombia
-  const center = [4.5, -73.0];
-  const zoom = 5.5;
-
   const airportsWithCoords = useMemo(() => {
     return airports
       .map((a) => {
@@ -187,6 +181,12 @@ export default function AirportsMap({
       })
       .filter(Boolean);
   }, [airports]);
+
+  if (!isReady) return null;
+
+  // Rough center of Colombia
+  const center = [4.5, -73.0];
+  const zoom = 5.5;
 
   return (
     <MapContainer
