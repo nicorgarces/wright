@@ -46,6 +46,7 @@ async function findRouteFiles(dir: string): Promise<string[]> {
 function getHonoPath(routeFile: string): { name: string; pattern: string }[] {
   const relativePath = routeFile.replace(__dirname, '');
   // Normalize backslashes to forward slashes for cross-platform compatibility
+  // Windows uses backslashes in paths which would cause split('/') to fail
   const normalizedPath = relativePath.replace(/\\/g, '/');
   const parts = normalizedPath.split('/').filter(Boolean);
   const routeParts = parts.slice(0, -1); // Remove 'route.js'
