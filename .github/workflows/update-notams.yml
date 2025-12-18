@@ -1,9 +1,9 @@
 name: Update NOTAMs
 
 on:
-  schedule:
+  #schedule:
     # Run every 5 minutes
-    - cron: '*/5 * * * *'
+    #- cron: '*/5 * * * *'
   workflow_dispatch:
     # Allow manual trigger
 
