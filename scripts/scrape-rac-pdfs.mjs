@@ -74,12 +74,15 @@ async function scrapeRacDocuments() {
     
     // Try to select "Show 100" results per page if pagination exists
     try {
-      // Look for pagination dropdown/button
-      const paginationSelector = 'select[name*="length"], button:contains("100"), a:contains("100")';
+      // Look for pagination controls - wait for content to be present
       await page.waitForSelector('table, .document-list, .file-list, a[href*=".pdf"]', { timeout: 10000 });
       
-      // Try to click "Show 100" if available
-      const show100Button = await page.$('button:contains("100"), a:contains("100")');
+      // Try to find and click "Show 100" button/link using text content
+      const show100Button = await page.evaluateHandle(() => {
+        const buttons = Array.from(document.querySelectorAll('button, a, select option'));
+        return buttons.find(el => el.textContent.includes('100'));
+      });
+      
       if (show100Button) {
         console.log("📄 Setting pagination to show 100 results...");
         await show100Button.click();

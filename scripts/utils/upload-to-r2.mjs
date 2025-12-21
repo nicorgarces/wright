@@ -56,11 +56,39 @@ export async function fileExistsInR2(client, bucketName, key) {
     await client.send(command);
     return true;
   } catch (error) {
-    if (error.name === "NotFound" || error.$metadata?.httpStatusCode === 404) {
+    // AWS SDK errors have $metadata property, check for 404 status
+    const is404 = error.name === "NotFound" || 
+                  (error.$metadata && error.$metadata.httpStatusCode === 404);
+    
+    if (is404) {
       return false;
     }
     throw error;
   }
+}
+
+/**
+ * Resolve endpoint URL from S3Client configuration
+ * @param {S3Client} client - S3 client instance
+ * @returns {Promise<string>} Resolved endpoint URL
+ */
+async function resolveEndpointUrl(client) {
+  const endpoint = client.config.endpoint;
+  
+  if (typeof endpoint === "string") {
+    return endpoint;
+  }
+  
+  if (endpoint && typeof endpoint === "object") {
+    // Handle endpoint as URL object or async function
+    if (typeof endpoint === "function") {
+      return await endpoint();
+    }
+    return endpoint.url || endpoint.hostname || "";
+  }
+  
+  // Fallback to default R2 URL pattern
+  return "";
 }
 
 /**
@@ -100,18 +128,10 @@ export async function uploadToR2(client, bucketName, key, body, options = {}) {
       await client.send(command);
 
       // Construct R2 URL
-      const endpoint = client.config.endpoint;
-      let r2Url;
-      
-      if (typeof endpoint === "string") {
-        r2Url = `${endpoint}/${bucketName}/${key}`;
-      } else if (endpoint && typeof endpoint === "object") {
-        // Handle endpoint as URL object or async function
-        const endpointStr = await (typeof endpoint === "function" ? endpoint() : endpoint.url || endpoint.hostname);
-        r2Url = `${endpointStr}/${bucketName}/${key}`;
-      } else {
-        r2Url = `https://${bucketName}.r2.cloudflarestorage.com/${key}`;
-      }
+      const endpointUrl = await resolveEndpointUrl(client);
+      const r2Url = endpointUrl
+        ? `${endpointUrl}/${bucketName}/${key}`
+        : `https://${bucketName}.r2.cloudflarestorage.com/${key}`;
 
       return r2Url;
     } catch (error) {
