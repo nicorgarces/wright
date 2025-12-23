@@ -7,7 +7,9 @@
 		"notams:fetch": "node scripts/update-notam-status.mjs",
 		"notams:upload": "node scripts/upload-notams-r2.mjs",
 		"notams:parse-status": "node scripts/parse-notam-status.mjs",
-		"notams:update": "npm run notams:fetch && npm run notams:parse-status && npm run notams:upload"
+		"notams:update": "npm run notams:fetch && npm run notams:parse-status && npm run notams:upload",
+		"rac:scrape": "node scripts/scrape-rac-pdfs.mjs",
+		"rac:setup-db": "node scripts/db/setup-rac-tables.mjs"
 	},
 	"dependencies": {
 		"@auth/core": "^0.37.2",

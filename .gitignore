@@ -8,3 +8,6 @@
 # Environment variables (security)
 *.env
 !*.env.example
+
+# Backup files
+*-backup-*.json
