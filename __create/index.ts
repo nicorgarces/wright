@@ -16,8 +16,13 @@ import ws from 'ws';
 import NeonAdapter from './adapter';
 import { getHTMLForErrorPage } from './get-html-for-error-page';
 import { isAuthAction } from './is-auth-action';
-import { API_BASENAME, api } from './route-builder';
-neonConfig.webSocketConstructor = ws;
+import { api } from './route-builder';
+
+// Manual route registration - BYPASS the broken auto-discovery
+api.post('/notam-chat', async (c) => {
+  const { POST } = await import('../src/app/api/notam-chat/route.js');
+  return POST(c. req.raw, { params: {} });
+});
 
 const als = new AsyncLocalStorage<{ requestId: string }>();
 
@@ -233,7 +238,7 @@ app.use('/api/auth/*', async (c, next) => {
   }
   return next();
 });
-app.route(API_BASENAME, api);
+app.route(process.env.API_BASENAME ?? '/api', api);
 
 export default await createHonoServer({
   app,

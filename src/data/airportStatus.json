@@ -1,6 +1,4 @@
-{
-<<<<<<< HEAD
-  "metadata": {
+{  "metadata": {
     "generatedAt": "2025-12-16T17:29:21.240Z",
     "totalAirports": 65,
     "totalNotams": 1337
@@ -12199,9 +12197,8 @@
       ],
       "lastUpdate": "2025-12-16T17:29:21.221Z"
     }
-  ]
-}
-=======
+  ],
+
   "SKBO": {
     "status": "OPERATIONAL",
     "reason": "All services normal",
@@ -12228,4 +12225,4 @@
     "lastUpdated": "2025-12-17T09:00:00Z"
   }
 }
->>>>>>> origin/copilot/update-airports-map-component
+

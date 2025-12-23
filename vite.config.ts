@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+// Load APIKeys. env
+config({ path: './APIkeys.env' });
+
 import path from 'node:path';
 import { reactRouter } from '@react-router/dev/vite';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';

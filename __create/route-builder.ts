@@ -5,6 +5,22 @@ import { Hono } from 'hono';
 import type { Handler } from 'hono/types';
 import updatedFetch from '../src/__create/fetch';
 
+declare global {
+  interface ImportMetaEnv {
+    DEV?: boolean;
+    [key: string]: any;
+  }
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+    readonly hot?: {
+      accept: (callback: (mod: any) => void) => void;
+    };
+    // Vite-style glob helpers
+    glob: (pattern: string, options?: any) => Record<string, any>;
+    globEager?: (pattern: string, options?: any) => Record<string, any>;
+  }
+}
+
 const API_BASENAME = '/api';
 const api = new Hono();
 
@@ -84,7 +100,8 @@ async function registerRoutes() {
 
   for (const routeFile of routeFiles) {
     try {
-      const route = await import(/* @vite-ignore */ `${routeFile}?update=${Date.now()}`);
+      const relativePath = '../' + routeFile.replace(/\\/g, '/').split('/src/')[1];
+      const route = await import(/* @vite-ignore */ `${relativePath}?update=${Date.now()}`);
 
       const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
       for (const method of methods) {
@@ -96,7 +113,7 @@ async function registerRoutes() {
               const params = c.req.param();
               if (import.meta.env.DEV) {
                 const updatedRoute = await import(
-                  /* @vite-ignore */ `${routeFile}?update=${Date.now()}`
+                  /* @vite-ignore */ `${relativePath}?update=${Date.now()}`
                 );
                 return await updatedRoute[method](c.req.raw, { params });
               }
