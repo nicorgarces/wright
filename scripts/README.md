@@ -1,6 +1,6 @@
 # RAC PDF Scraping Scripts
 
-This directory contains scripts for scraping RAC (Reglamentos Aeronáuticos de Colombia) regulation PDFs from the Aerocivil website and storing them in Cloudflare R2.
+This directory contains scripts for scraping RAC (Reglamentos Aeronáuticos de Colombia) regulation PDFs from the Aerocivil website (https://www.aerocivil.gov.co/normatividad/13-reglamentos-aeronauticos-de-colombia-rac) and storing them in Cloudflare R2.
 
 ## Files
 
@@ -59,7 +59,7 @@ npm run rac:scrape
 
 This will:
 - Launch a headless browser and navigate to the Aerocivil RAC page
-- Extract all RAC document metadata (code, title, description, publication date, PDF URL)
+- Extract all ~49 RAC document metadata from the table (RAC code, title, effective date, issuing entity, PDF URL)
 - Download each PDF
 - Upload PDFs to Cloudflare R2 (skipping files that already exist)
 - Generate a manifest file at `src/data/rac-manifest.json`
@@ -75,17 +75,18 @@ The scraper generates `src/data/rac-manifest.json` with the following structure:
 ```json
 {
   "lastUpdated": "2024-12-21T10:00:00Z",
-  "sourceUrl": "https://www.aerocivil.gov.co/documentos/254/reglamentos-aeronauticos-de-colombia-rac/",
-  "totalDocuments": 50,
+  "sourceUrl": "https://www.aerocivil.gov.co/normatividad/13-reglamentos-aeronauticos-de-colombia-rac",
+  "totalDocuments": 49,
   "documents": [
     {
       "racCode": "RAC 1",
       "title": "Definiciones y abreviaturas",
-      "description": "Document description...",
-      "pdfUrl": "https://www.aerocivil.gov.co/...",
+      "description": "",
+      "pdfUrl": "https://www.aerocivil.gov.co/loader.php?lServicio=Tools2&lTipo=descargas&lFuncion=descargar&idFile=16908",
+      "effectiveDate": "01/01/2024",
+      "issuingEntity": "Aerocivil",
       "r2Key": "rac-documents/RAC_1.pdf",
       "r2Url": "https://...r2.cloudflarestorage.com/rac-documents/RAC_1.pdf",
-      "publicationDate": "2024-11-23",
       "fileSizeBytes": 1234567,
       "scrapedAt": "2024-12-21T10:00:00Z"
     }
@@ -109,7 +110,8 @@ wright-rac-documents/
 ## Features
 
 - ✅ Headless browser scraping with Puppeteer
-- ✅ Automatic pagination handling (show 100 results)
+- ✅ Table-based extraction from new Aerocivil page structure
+- ✅ Extracts all 49 RAC documents (no pagination needed)
 - ✅ PDF download with progress logging
 - ✅ R2 upload with retry logic (3 attempts with exponential backoff)
 - ✅ Skip already-uploaded files
