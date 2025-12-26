@@ -10,10 +10,10 @@ const __dirname = path.dirname(__filename);
 /**
  * RAC PDF Scraper
  * Scrapes RAC regulation PDFs from Aerocivil website and uploads to Cloudflare R2
- * Source: https://www.aerocivil.gov.co/documentos/254/reglamentos-aeronauticos-de-colombia-rac/
+ * Source: https://www.aerocivil.gov.co/normatividad/13-reglamentos-aeronauticos-de-colombia-rac
  */
 
-const RAC_PAGE_URL = "https://www.aerocivil.gov.co/documentos/254/reglamentos-aeronauticos-de-colombia-rac/";
+const RAC_PAGE_URL = "https://www.aerocivil.gov.co/normatividad/13-reglamentos-aeronauticos-de-colombia-rac";
 
 // Cloudflare R2 configuration
 const R2_CONFIG = {
@@ -70,103 +70,51 @@ async function scrapeRacDocuments() {
       timeout: 60000,
     });
 
-    console.log("⏳ Waiting for page content to load...");
+    console.log("⏳ Waiting for table to load...");
     
-    // Try to select "Show 100" results per page if pagination exists
-    try {
-      // Look for pagination controls - wait for content to be present
-      await page.waitForSelector('table, .document-list, .file-list, a[href*=".pdf"]', { timeout: 10000 });
-      
-      // Try to find and click "Show 100" button/link using text content
-      const show100Button = await page.evaluateHandle(() => {
-        const buttons = Array.from(document.querySelectorAll('button, a, select option'));
-        return buttons.find(el => el.textContent.includes('100'));
-      });
-      
-      if (show100Button) {
-        console.log("📄 Setting pagination to show 100 results...");
-        await show100Button.click();
-        await page.waitForTimeout(2000);
-      }
-    } catch (error) {
-      console.log("ℹ️  No pagination control found or not needed");
-    }
-
-    console.log("🔍 Extracting RAC document information...");
+    // Wait for the table with RAC documents
+    await page.waitForSelector('table tbody tr', { timeout: 10000 });
     
-    // Extract document data from the page
+    console.log("🔍 Extracting RAC document information from table...");
+    
+    // Extract document data from table rows
     const documents = await page.evaluate(() => {
-      const docs = [];
+      const rows = document.querySelectorAll('table tbody tr');
       
-      // Look for PDF links on the page
-      const links = Array.from(document.querySelectorAll('a[href*=".pdf"], a[href*="descargar"]'));
-      
-      links.forEach((link) => {
-        const href = link.getAttribute("href");
-        if (!href) return;
+      return Array.from(rows).map(row => {
+        const cells = row.querySelectorAll('td');
         
-        // Get absolute URL
-        const url = new URL(href, window.location.href).toString();
+        // Skip if not enough columns
+        if (cells.length < 5) return null;
         
-        // Skip if not a PDF or download link
-        if (!url.toLowerCase().includes(".pdf") && !url.toLowerCase().includes("descargar")) {
-          return;
-        }
+        // Column 0: RAC code (just number like "91", "135")
+        const racCodeNum = cells[0]?.textContent.trim();
         
-        // Extract text content and metadata from the link or parent elements
-        const linkText = link.textContent.trim();
-        const parentRow = link.closest("tr, .document-item, .file-item, li, div[class*='document']");
+        // Column 1: Effective date (DD/MM/YYYY)
+        const effectiveDate = cells[1]?.textContent.trim();
         
-        let racCode = "";
-        let title = linkText;
-        let description = "";
-        let publicationDate = "";
+        // Column 2: Title
+        const title = cells[2]?.textContent.trim();
         
-        // Try to extract RAC code from link text or nearby elements
-        const racMatch = linkText.match(/RAC\s*(\d+)/i) || 
-                        (parentRow ? parentRow.textContent.match(/RAC\s*(\d+)/i) : null);
-        if (racMatch) {
-          racCode = `RAC ${racMatch[1]}`;
-        }
+        // Column 3: Issuing entity
+        const issuingEntity = cells[3]?.textContent.trim();
         
-        // Try to get title from parent row or nearby elements
-        if (parentRow) {
-          const cells = parentRow.querySelectorAll("td, .title, .document-title, h3, h4");
-          if (cells.length > 0) {
-            title = Array.from(cells).map(cell => cell.textContent.trim()).filter(Boolean)[0] || linkText;
-          }
-          
-          // Look for description
-          const descElements = parentRow.querySelectorAll(".description, .summary, p");
-          if (descElements.length > 0) {
-            description = Array.from(descElements).map(el => el.textContent.trim()).filter(Boolean).join(" ");
-          }
-          
-          // Look for date
-          const dateMatch = parentRow.textContent.match(/(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})/);
-          if (dateMatch) {
-            publicationDate = dateMatch[1];
-          }
-        }
+        // Column 4: Download link (find <a> with title="Descargar")
+        const downloadLink = cells[4]?.querySelector('a[title="Descargar"]');
+        const pdfUrl = downloadLink?.getAttribute('href');
         
-        // If no RAC code found yet, try to extract from URL or title
-        if (!racCode) {
-          const urlRacMatch = url.match(/RAC[_\s-]*(\d+)/i);
-          if (urlRacMatch) {
-            racCode = `RAC ${urlRacMatch[1]}`;
-          }
-        }
+        // Skip if no valid data
+        if (!racCodeNum || !pdfUrl) return null;
         
-        docs.push({
-          racCode: racCode || "RAC Unknown",
+        return {
+          racCode: `RAC ${racCodeNum}`,
           title: title || "Untitled Document",
-          description: description,
-          pdfUrl: url,
-          publicationDate: publicationDate,
-        });
-      });
-      
-      return docs;
+          description: "", // Not available in new structure
+          pdfUrl: new URL(pdfUrl, window.location.href).toString(),
+          effectiveDate: effectiveDate || "",
+          issuingEntity: issuingEntity || "",
+        };
+      }).filter(Boolean); // Remove null entries
     });
 
     console.log(`✅ Found ${documents.length} RAC documents`);
@@ -236,9 +184,10 @@ async function processAndUploadDocuments() {
             title: doc.title,
             description: doc.description,
             pdfUrl: doc.pdfUrl,
+            effectiveDate: doc.effectiveDate,
+            issuingEntity: doc.issuingEntity,
             r2Key,
             r2Url: `${R2_CONFIG.endpoint}/${R2_CONFIG.bucketName}/${r2Key}`,
-            publicationDate: doc.publicationDate,
             fileSizeBytes: null,
             scrapedAt: new Date().toISOString(),
           });
@@ -269,9 +218,10 @@ async function processAndUploadDocuments() {
           title: doc.title,
           description: doc.description,
           pdfUrl: doc.pdfUrl,
+          effectiveDate: doc.effectiveDate,
+          issuingEntity: doc.issuingEntity,
           r2Key,
           r2Url,
-          publicationDate: doc.publicationDate,
           fileSizeBytes,
           scrapedAt: new Date().toISOString(),
         });
